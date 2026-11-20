@@ -2,6 +2,30 @@ import json
 from datetime import datetime
 #Functions for the commands
 
+
+def list_task(args):
+    tasks = load_task()
+    #Gets the max length of description to determine width
+    widthofdescription = max(
+        len("DESCRIPTION"),
+        max((len(task["description"]) for task in tasks), default = 0)
+    ) + 3
+    #Table formatting for the current list of tasks
+    print(f"{'ID':<5}{'DESCRIPTION':<{widthofdescription}}{'STATUS':<15}{'CREATED'}")
+    print("-" * (5 + widthofdescription + 15 + 10))
+
+    #Check each task and if it matches the status provided by the user, only list those tasks, otherwise just list all
+    if args.status is not None:
+        tasks = [task for task in tasks if task["status"] == args.status]
+    for task in tasks:
+            #Formatting so the table looks aligned
+            print(f"{task['id']:<5}{task['description']:<{widthofdescription}}{task['status']:<15}{task['createdAt'][:10]}")
+
+
+
+
+
+
 def add_task(args):
     tasks = load_task()
     next_id = max((task["id"] for task in tasks), default=0) + 1
@@ -34,7 +58,7 @@ def delete_task(args):
             save_task(tasks)
             print("Task deleted")
             return
-
+#Updates a specific tasks (using ID)
 def update_task(args):
     tasks = load_task()
     for task in tasks:
@@ -54,7 +78,6 @@ def update_task(args):
 
 
 #Functions for accessing/modifying JSON with tasks
-
 def load_task():
     with open("tasks.json","r") as f:
         d = json.load(f)
