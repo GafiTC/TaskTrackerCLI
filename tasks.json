@@ -1,17 +1,16 @@
 [
    {
+      "id": 1,
+      "description": "Get money",
+      "status": "done",
+      "createdAt": "2026-11-19T22:30:15",
+      "updatedAt": "2026-11-19T22:34:08"
+   },
+   {
       "id": 2,
-      "description": "Go run",
-      "done": true
-   },
-   {
-      "id": 3,
-      "description": "buy groceries",
-      "done": false
-   },
-   {
-      "id": 4,
-      "description": "buy groceries",
-      "done": false
+      "description": "HW",
+      "status": "todo",
+      "createdAt": "2026-11-19T22:30:32",
+      "updatedAt": "2026-11-19T22:30:32"
    }
 ]

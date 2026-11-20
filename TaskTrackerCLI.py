@@ -1,10 +1,7 @@
 import json
 import argparse
-from Tasks import load_task,save_task, add_task, delete_task
-
-#def  update_task()
-
-
+from Tasks import load_task,save_task, add_task, delete_task, update_task
+from datetime import datetime
 
 parser = argparse.ArgumentParser(description="Simple Task Tracker")
 subparsers = parser.add_subparsers(dest="command",required=True)
@@ -14,7 +11,15 @@ addTaskParser.add_argument("task", help = "Name of task")
 addTaskParser.set_defaults(func=add_task)
 
 updateTaskParser = subparsers.add_parser("update", help = "Update a task")
-updateTaskParser.add_argument("task", help = "Task id to be updated")
+updateTaskParser.add_argument("id", type=int, help = "Task id to be updated")
+updateTaskParser.add_argument("--description", nargs = "?" ,help = "New task description")
+updateTaskParser.add_argument(
+    "--status",
+    choices = ["todo","in-progress","done"],
+    help = "Did you finish yet"
+)
+updateTaskParser.set_defaults(func=update_task)
+
 
 deleteTaskParser = subparsers.add_parser("delete", help= "Delete a task")
 deleteTaskParser.add_argument("id",type=int, help = "Task id to be deleted")
@@ -22,11 +27,11 @@ deleteTaskParser.set_defaults(func=delete_task)
 
 args = parser.parse_args()
 
-if args.command == "add":
-    args.func(args.task)
+if hasattr(args,"func"):
+    args.func(args)
+else:
+    parser.print_help()
 
-elif args.command == "delete":
-    args.func(args.id)
 
 
 
