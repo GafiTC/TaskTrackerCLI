@@ -66,9 +66,6 @@ def update_task(args):
             if args.description:
                 task["description"] = args.description
                 task["updatedAt"] = datetime.now().isoformat(timespec="seconds")
-            if args.status:
-                task["status"] = args.status
-                task["updatedAt"] = datetime.now().isoformat(timespec="seconds")
             save_task(tasks)
             break
         else:

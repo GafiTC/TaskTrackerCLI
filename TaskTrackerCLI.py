@@ -24,12 +24,7 @@ addTaskParser.set_defaults(func=add_task)
 
 updateTaskParser = subparsers.add_parser("update", help = "Update a task")
 updateTaskParser.add_argument("id", type=int, help = "Task id to be updated")
-updateTaskParser.add_argument("--description", nargs = "?" ,help = "New task description")
-updateTaskParser.add_argument(
-    "--status",
-    choices = ["todo","in-progress","done"],
-    help = "Did you finish yet"
-)
+updateTaskParser.add_argument("description", nargs="?", default = None, help="Optional task description")
 updateTaskParser.set_defaults(func=update_task)
 
 
