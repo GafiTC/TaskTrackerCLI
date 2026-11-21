@@ -1,8 +1,11 @@
 import json
 from datetime import datetime
+from pathlib import Path
+from platformdirs import user_data_dir
+
+
+
 #Functions for the commands
-
-
 def list_task(args):
     tasks = load_task()
     #Gets the max length of description to determine width
@@ -20,11 +23,6 @@ def list_task(args):
     for task in tasks:
             #Formatting so the table looks aligned
             print(f"{task['id']:<5}{task['description']:<{widthofdescription}}{task['status']:<15}{task['createdAt'][:10]}")
-
-
-
-
-
 
 def add_task(args):
     tasks = load_task()
@@ -47,7 +45,7 @@ def delete_task(args):
         if task["id"] == args.id:
             if task["status"] != "done":
                 confirm = input("Task is NOT done, Delete anyway? (Y/n): ")
-                if confirm.upper()!= "Y":
+                if confirm.strip().lower() not in ("y", "yes"):
                     print("Deletion stopped")
                     return
             tasks.remove(task)
@@ -68,19 +66,40 @@ def update_task(args):
                 task["updatedAt"] = datetime.now().isoformat(timespec="seconds")
             save_task(tasks)
             break
+    else:
+        print("Task not found")
+
+
+def mark_task(args):
+    tasks = load_task()
+    for task in tasks:
+        if task["id"] == args.id:
+            task["status"] = args.status
+            save_task(tasks)
+            break
         else:
-            print("Task not found")
+            print("That task could not be found, perhaps that's not a task yet?")
+            break
 
 
 
+DATA_DIR = Path(user_data_dir("task-cli",appauthor=False))#Finds the correct location to store, depending on OS
+#Creates any parent directories if not there; if there, don't raise error
+DATA_DIR.mkdir(parents=True,exist_ok=True)
+TASKS_FILE = DATA_DIR / "tasks.json"
 
 #Functions for accessing/modifying JSON with tasks
 def load_task():
-    with open("tasks.json","r") as f:
+    #Creates the .json file if not found
+    if not TASKS_FILE.exists():
+        with open(TASKS_FILE, "w") as f:
+            json.dump([], f)
+    with open(TASKS_FILE,"r") as f:
         d = json.load(f)
     return d
 
+
 def save_task(tasks):
-    with open("tasks.json","w") as f:
+    with open(TASKS_FILE,"w") as f:
         json.dump(tasks,f,indent=3)
 
